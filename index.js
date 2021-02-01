@@ -846,7 +846,7 @@ class TreeChart {
             }) => data.borderRadius || 0)
             .attr('stroke-width', ({
                 data
-            }) => data.borderWidth || attrs.strokeWidth)
+            }) => data.borderWidth || 0)
             .attr('cursor', 'pointer')
             .attr('stroke', ({
                 borderColor
@@ -875,7 +875,7 @@ class TreeChart {
             .attr('r', 16)
             .attr('stroke-width', ({
                 data
-            }) => data.borderWidth || attrs.strokeWidth)
+            }) => data.borderWidth || 0.5)
             .attr('fill', attrs.backgroundColor)
             .attr('stroke', ({
                 borderColor
