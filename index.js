@@ -783,6 +783,7 @@ class TreeChart {
             })
             .attr('pointer-events', 'none')
 
+		/*
         // Add button group for button above node
         const aboveNodeGroups = nodeEnter
             .patternify({
@@ -810,14 +811,12 @@ class TreeChart {
                 attrs.onBelowNodeClick(data);
             });
 
-		/*
 		aboveNodeGroups
 			.patternify({
 				tag: 'rect',
 				selector: 'above-button-rect',
 				data: d => [d]
 			})
-			*/
 
         aboveNodeGroups
             .patternify({
@@ -848,6 +847,7 @@ class TreeChart {
                 data: d => [d]
             })
             .attr('pointer-events', 'none')
+		*/
 
         // Transition to the proper position for the node
         nodeUpdate.transition()
@@ -971,10 +971,11 @@ class TreeChart {
                 children
             }) => {
                 if (children) return '-';
-                return '≡';
+                return '+';
             })
             .attr('y', this.isEdge() ? 10 : 0)
 
+		/*
         // Move above above button group to the desired position
         nodeUpdate.select('.above-node-g')
             .attr('transform', ({
@@ -990,7 +991,6 @@ class TreeChart {
 					return 'inherit';
 				}
 			})
-			*/
 
         nodeUpdate.select('.above-button-circle')
             .attr('r', 16)
@@ -1014,7 +1014,6 @@ class TreeChart {
 					.attr('fill', attrs.backgroundColor)
 			})
 
-		/*
         nodeUpdate.select('.above-button-rect')
 			.attr('x', -16)
 			.attr('y', -16)
@@ -1022,7 +1021,6 @@ class TreeChart {
             .attr('height', 32)
             .attr('stroke-width', 0)
 			.attr('fill', attrs.backgroundColor)
-			*/
 
         nodeUpdate.select('.above-button-text')
             .attr('text-anchor', 'middle')
@@ -1069,7 +1067,6 @@ class TreeChart {
 					.attr('fill', '#e2e1e1')
 			})
 
-		/*
         nodeUpdate.select('.above-button-rect')
 			.attr('x', -16)
 			.attr('y', -16)
@@ -1077,7 +1074,6 @@ class TreeChart {
             .attr('height', 32)
             .attr('stroke-width', 0)
 			.attr('fill', attrs.backgroundColor)
-			*/
 
         nodeUpdate.select('.below-button-text')
             .attr('text-anchor', 'middle')
@@ -1094,6 +1090,7 @@ class TreeChart {
                 return '+';
             })
             .attr('y', this.isEdge() ? 10 : 0)
+		*/
 
         // Remove any exiting nodes after transition
         const nodeExitTransition = nodesSelection.exit()
