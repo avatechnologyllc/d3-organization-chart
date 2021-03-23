@@ -16,6 +16,7 @@ class TreeChart {
             nodeTextFill: 'white',
             defaultFont: 'Helvetica',
             backgroundColor: '#fafafa',
+			backgroundImage: null,
             data: null,
             depth: 180,
             duration: 600,
@@ -210,6 +211,7 @@ class TreeChart {
 
         // *************************  DRAWING **************************
         //Add svg
+		console.log(attrs);
         const svg = container
             .patternify({
                 tag: 'svg',
@@ -220,8 +222,11 @@ class TreeChart {
             .attr('font-family', attrs.defaultFont)
             .call(behaviors.zoom)
             .attr('cursor', 'move')
-            .style('background-color', attrs.backgroundColor);
-        attrs.svg = svg;
+            .style('background-color', attrs.backgroundColor)
+			.style('background-image', attrs.backgroundImage)
+			.style('background-position', '20% 0')
+			.style('background-repeat', 'no-repeat');
+		attrs.svg = svg;
 
         //Add container g element
         const chart = svg
@@ -1188,6 +1193,7 @@ class TreeChart {
             .attr('y', ({
                 height
             }) => -height / 2)
+			.style('box-shadow', '0 0 5px 3px darkgray')
         attrs.svg.selectAll('.node-foreign-object-div')
             .style('width', ({
                 width
