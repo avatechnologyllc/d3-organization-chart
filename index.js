@@ -24,9 +24,14 @@ class TreeChart {
             dropShadowId: null,
             initialZoom: 1,
             onNodeClick: d => d,
+			onContextClick: d => d,
+			/*
 			onAboveNodeClick: d => d,
 			onBelowNodeClick: d => d
+			*/
         };
+
+		console.log(attrs.marginLeft);
 
         this.getChartState = () => attrs;
 
@@ -211,7 +216,7 @@ class TreeChart {
 
         // *************************  DRAWING **************************
         //Add svg
-		console.log(attrs);
+		// console.log(attrs);
         const svg = container
             .patternify({
                 tag: 'svg',
@@ -626,7 +631,7 @@ class TreeChart {
                 data
             }) => {
 				// don't fire main click event if specific areas are pressed
-				if (['node-button-circle', 'below-button-circle', 'above-button-circle']
+				if (['node-button-circle', 'node-context-circle', 'below-button-circle', 'above-button-circle']
 					.some(c => [...d3.event.srcElement.classList].includes(c))) {
                     return;
                 }
@@ -779,6 +784,34 @@ class TreeChart {
             .patternify({
                 tag: 'text',
                 selector: 'node-button-text',
+                data: d => [d]
+            })
+            .attr('pointer-events', 'none')
+
+        const nodeContextGroups = nodeEnter
+            .patternify({
+                tag: 'g',
+                selector: 'node-context-g',
+                data: d => [d]
+            })
+            .on('click', ({
+                data, e
+            }) => {
+				d3.event.preventDefault();
+                attrs.onContextClick(data, d3.event);
+            });
+
+        nodeContextGroups
+            .patternify({
+                tag: 'circle',
+                selector: 'node-context-circle',
+                data: d => [d]
+            })
+
+        nodeContextGroups
+            .patternify({
+                tag: 'text',
+                selector: 'node-context-text',
                 data: d => [d]
             })
             .attr('pointer-events', 'none')
@@ -945,7 +978,7 @@ class TreeChart {
                 return 0;
             })
 
-        // Restyle node button circle
+        // restyle node button circle
         nodeUpdate.select('.node-button-circle')
             .attr('r', 14)
             .attr('stroke-width', ({
@@ -956,7 +989,7 @@ class TreeChart {
                 borderColor
             }) => borderColor)
 
-        // Restyle button texts
+        // restyle button texts
         nodeUpdate.select('.node-button-text')
             .attr('text-anchor', 'middle')
             .attr('alignment-baseline', 'middle')
@@ -975,13 +1008,36 @@ class TreeChart {
             })
             .attr('y', this.isEdge() ? 10 : 0)
 
+        nodeUpdate.select('.node-context-g')
+            .attr('transform', ({
+                data
+            }) => `translate(${data.width/2-16},${-1*data.height/2+16})`)
+
+        nodeUpdate.select('.node-context-circle')
+            .attr('r', 14)
+            .attr('stroke-width', ({
+                data
+            }) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
+            .attr('fill', attrs.backgroundColor)
+            .attr('stroke', ({
+                borderColor
+            }) => borderColor)
+
+        nodeUpdate.select('.node-context-text')
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+			.attr('fill', attrs.defaultTextFill)
+			.attr('font-size', 24)
+			.text('≡')
+			.attr('y', this.isEdge() ? 10 : 0)
+
+
 		/*
         // Move above above button group to the desired position
         nodeUpdate.select('.above-node-g')
             .attr('transform', ({
                 data
             }) => `translate(0,${(-1 * data.height / 2) - 20})`)
-		/*
 			.attr('display', ({
 				parent
 			}) => {
