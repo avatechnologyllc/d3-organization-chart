@@ -23,6 +23,8 @@ class TreeChart {
             dropShadowId: null,
             initialZoom: 1,
             onNodeClick: d => d,
+			onAboveNodeClick: d => d,
+			onBelowNodeClick: d => d
         };
 
         this.getChartState = () => attrs;
@@ -618,10 +620,12 @@ class TreeChart {
             .on('click', ({
                 data
             }) => {
-                if ([...d3.event.srcElement.classList].includes('node-button-circle')) {
+				// don't fire main click event if specific areas are pressed
+				if (['node-button-circle', 'below-button-circle', 'above-button-circle']
+					.some(c => [...d3.event.srcElement.classList].includes(c))) {
                     return;
                 }
-                attrs.onNodeClick(data.nodeId);
+                attrs.onNodeClick(data);
             });
 
         // Add background rectangle for the nodes 
@@ -774,6 +778,72 @@ class TreeChart {
             })
             .attr('pointer-events', 'none')
 
+        // Add button group for button above node
+        const aboveNodeGroups = nodeEnter
+            .patternify({
+                tag: 'g',
+                selector: 'above-node-g',
+                data: d => [d]
+            })
+            .on('click', ({
+                data
+            }) => {
+                attrs.onAboveNodeClick(data);
+            });
+
+        // Add button group for button above node
+        const belowNodeGroups = nodeEnter
+            .patternify({
+                tag: 'g',
+                selector: 'below-node-g',
+                data: d => [d]
+            })
+            .on('click', ({
+                data
+            }) => {
+				d3.event.preventDefault();
+                attrs.onBelowNodeClick(data);
+            });
+
+		/*
+		aboveNodeGroups
+			.patternify({
+				tag: 'rect',
+				selector: 'above-button-rect',
+				data: d => [d]
+			})
+			*/
+
+        aboveNodeGroups
+            .patternify({
+                tag: 'circle',
+                selector: 'above-button-circle',
+                data: d => [d]
+            })
+
+        aboveNodeGroups
+            .patternify({
+                tag: 'text',
+                selector: 'above-button-text',
+                data: d => [d]
+            })
+            .attr('pointer-events', 'none')
+
+        belowNodeGroups
+            .patternify({
+                tag: 'circle',
+                selector: 'below-button-circle',
+                data: d => [d]
+            })
+
+        belowNodeGroups
+            .patternify({
+                tag: 'text',
+                selector: 'below-button-text',
+                data: d => [d]
+            })
+            .attr('pointer-events', 'none')
+
         // Transition to the proper position for the node
         nodeUpdate.transition()
             .attr('opacity', 0)
@@ -872,7 +942,7 @@ class TreeChart {
 
         // Restyle node button circle
         nodeUpdate.select('.node-button-circle')
-            .attr('r', 16)
+            .attr('r', 14)
             .attr('stroke-width', ({
                 data
             }) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
@@ -896,6 +966,126 @@ class TreeChart {
                 children
             }) => {
                 if (children) return '-';
+                return '≡';
+            })
+            .attr('y', this.isEdge() ? 10 : 0)
+
+        // Move above above button group to the desired position
+        nodeUpdate.select('.above-node-g')
+            .attr('transform', ({
+                data
+            }) => `translate(0,${(-1 * data.height / 2) - 20})`)
+		/*
+			.attr('display', ({
+				parent
+			}) => {
+				if (parent === null) {
+					return 'none';
+				} else {
+					return 'inherit';
+				}
+			})
+			*/
+
+        nodeUpdate.select('.above-button-circle')
+            .attr('r', 16)
+			.attr('stroke-width', 0)
+            .attr('fill', attrs.backgroundColor)
+            .attr('stroke', ({
+                borderColor
+            }) => borderColor)
+			.on('mouseover', function(d, i) {
+				d3.select(this).transition()
+					.duration('50')
+					.attr('stroke-width', ({
+						data
+					}) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
+					.attr('fill', 'lightgrey')
+			})
+			.on('mouseout', function(d, i) {
+				d3.select(this).transition()
+					.duration('50')
+					.attr('stroke-width', 0)
+					.attr('fill', attrs.backgroundColor)
+			})
+
+		/*
+        nodeUpdate.select('.above-button-rect')
+			.attr('x', -16)
+			.attr('y', -16)
+            .attr('width', 32)
+            .attr('height', 32)
+            .attr('stroke-width', 0)
+			.attr('fill', attrs.backgroundColor)
+			*/
+
+        nodeUpdate.select('.above-button-text')
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .attr('fill', attrs.defaultTextFill)
+            .attr('font-size', ({
+                children
+            }) => {
+                return 26;
+            })
+            .text(({
+                children
+            }) => {
+                return '+';
+            })
+            .attr('y', this.isEdge() ? 10 : 0)
+
+        // Move above above button group to the desired position
+        nodeUpdate.select('.below-node-g')
+            .attr('transform', ({
+                data
+            }) => `translate(${(-1 * data.width / 2) + 16}, ${(data.height / 2) - 16})`)
+			.attr('opacity', 1)
+
+        nodeUpdate.select('.below-button-circle')
+            .attr('r', 16)
+			.attr('stroke-width', 0)
+            .attr('fill', '#e2e1e1')
+            .attr('stroke', ({
+                borderColor
+            }) => borderColor)
+			.on('mouseover', function(d, i) {
+				d3.select(this).transition()
+					.duration('50')
+					.attr('stroke-width', ({
+						data
+					}) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
+					.attr('fill', 'lightgrey')
+			})
+			.on('mouseout', function(d, i) {
+				d3.select(this).transition()
+					.duration('50')
+					.attr('stroke-width', 0)
+					.attr('fill', '#e2e1e1')
+			})
+
+		/*
+        nodeUpdate.select('.above-button-rect')
+			.attr('x', -16)
+			.attr('y', -16)
+            .attr('width', 32)
+            .attr('height', 32)
+            .attr('stroke-width', 0)
+			.attr('fill', attrs.backgroundColor)
+			*/
+
+        nodeUpdate.select('.below-button-text')
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .attr('fill', attrs.defaultTextFill)
+            .attr('font-size', ({
+                children
+            }) => {
+                return 26;
+            })
+            .text(({
+                children
+            }) => {
                 return '+';
             })
             .attr('y', this.isEdge() ? 10 : 0)
