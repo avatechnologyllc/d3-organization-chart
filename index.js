@@ -16,7 +16,7 @@ class TreeChart {
             nodeTextFill: 'white',
             defaultFont: 'Helvetica',
             backgroundColor: '#fafafa',
-			backgroundImage: null,
+			backgroundStyle: '',
             data: null,
             depth: 180,
             duration: 600,
@@ -227,10 +227,8 @@ class TreeChart {
             .attr('font-family', attrs.defaultFont)
             .call(behaviors.zoom)
             .attr('cursor', 'move')
+			.style('background', attrs.backgroundStyle)
             .style('background-color', attrs.backgroundColor)
-			.style('background-image', attrs.backgroundImage)
-			.style('background-position', '20% 0')
-			.style('background-repeat', 'no-repeat');
 		attrs.svg = svg;
 
         //Add container g element
