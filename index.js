@@ -31,8 +31,6 @@ class TreeChart {
 			*/
         };
 
-		console.log(attrs.marginLeft);
-
         this.getChartState = () => attrs;
 
         // Dynamically set getter and setter functions for Chart class
