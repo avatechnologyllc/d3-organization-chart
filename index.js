@@ -46,8 +46,6 @@ class TreeChart {
             };
         });
 
-
-		console.log("test")
         this.initializeEnterExitUpdatePattern();
     }
 
@@ -416,7 +414,6 @@ class TreeChart {
         y
     }) {
 
-		console.log("test3")
         const attrs = this.getChartState();
         const calc = attrs.calc;
 
@@ -1370,7 +1367,6 @@ class TreeChart {
 
     // This function updates nodes state and redraws graph, usually after data change
     updateNodesState() {
-		console.log("test2")
         const attrs = this.getChartState();
         // Store new root by converting flat data to hierarchy
         attrs.root = d3.stratify()
