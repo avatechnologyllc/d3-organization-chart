@@ -17,6 +17,7 @@ class TreeChart {
             defaultFont: 'Helvetica',
             backgroundColor: '#fafafa',
 			backgroundStyle: '',
+			contrastColor: null,
             data: null,
             depth: 180,
             duration: 600,
@@ -978,7 +979,7 @@ class TreeChart {
             .attr('stroke-width', ({
                 data
             }) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
-            .attr('fill', attrs.backgroundColor)
+            .attr('fill', attrs.contrastColor? attrs.contrastColor: attrs.backgroundColor)
             .attr('stroke', ({
                 borderColor
             }) => borderColor)
@@ -1012,7 +1013,7 @@ class TreeChart {
             .attr('stroke-width', ({
                 data
             }) => data.buttonBorderWidth !== null? data.buttonBorderWidth: attrs.strokeWidth)
-            .attr('fill', attrs.backgroundColor)
+            .attr('fill', attrs.contrastColor? attrs.contrastColor: attrs.backgroundColor)
             .attr('stroke', ({
                 borderColor
             }) => borderColor)
